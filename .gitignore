@@ -1,0 +1,133 @@
+# Temporary and binary files
+*~
+*.py[cod]
+*.py[co]
+*$py.class
+*.so
+*.cfg
+!.isort.cfg
+!setup.cfg
+*.orig
+*.log
+*.pot
+__pycache__/
+*.pyc
+.cache/
+.*.swp
+*/.ipynb_checkpoints/
+.DS_Store
+._.DS_Store
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~.nib
+local_settings.py
+
+# Project files
+.ropeproject
+.project
+.pydevproject
+.settings
+.idea
+.vscode
+tags
+
+# Package files
+*.egg
+*.eggs/
+.installed.cfg
+*.egg-info/
+*.whl
+*.tar.gz
+*.zip
+
+# Unittest and coverage
+htmlcov/
+.coverage
+.coverage.*
+.tox/
+.nox/
+junit*.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+nosetests.xml
+
+# Build and docs folder/files
+build/
+dist/
+sdist/
+docs/api/
+docs/_rst/
+docs/_build/
+cover/
+MANIFEST
+*.manifest
+*.spec
+
+# Per-project virtualenvs
+.venv*/
+.venv/
+venv/
+.conda*/
+.python-version
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Sandbox directory
+sandbox/
+tests/sandbox/
+
+# Data directories
+examples/data/
+tests/data_import/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Output files and plots
+*.png
+*.jpg
+*.jpeg
+*.pdf
+*.svg
+*.eps
+*.tiff
+*.gif
+plots/
+figures/
+output/
+results/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Log files
+*.log
+*.out
+*.err
+
+# OS specific files
+Thumbs.db
+.DS_Store
+._.DS_Store
+*.lnk
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+
+# Temporary files
+*.tmp
+*.temp
+*~
