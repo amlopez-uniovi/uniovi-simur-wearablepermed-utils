@@ -1148,22 +1148,9 @@ def ReadFileThread(bin_file, readFileQueue):  # 建立一个任务线程类
 #bin2csv('D:\\MATA00-1000777-20210603-104952.BIN', '.\\test12.csv')
 
 
-def run():
-    """
-    Entry point for console script. 
-    Note: Consider using scripts/convert_bin_to_csv.py for better organization.
-    """
-    import argparse
-    parser = argparse.ArgumentParser(description="Convert a .BIN file to .CSV using bin2csv.")
-    parser.add_argument("bin_file", type=str, help="Path to the input .BIN file")
-    parser.add_argument("csv_file", type=str, help="Path to the output .CSV file")
-    args = parser.parse_args()
-    return bin2csv(args.bin_file, args.csv_file)
-
-
-# Rename this file to bin2csv.py to allow module import as simur_wpw_utils.bin2csv
+# Main execution for standalone usage
 if __name__ == "__main__":
-
+    import argparse
     parser = argparse.ArgumentParser(
         description="Convert a .BIN file to .CSV using bin2csv."
     )

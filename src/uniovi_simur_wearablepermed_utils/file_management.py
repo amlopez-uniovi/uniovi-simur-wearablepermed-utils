@@ -463,42 +463,6 @@ Esta función permite ejecutar el script desde la línea de comandos, facilitand
 import argparse
 import sys
 
-def load_segment():
-    """
-    Entry point for console script.
-    Note: Consider using scripts/load_segment_wpm_data.py for better organization.
-    """
-    import argparse
-    import sys
-    
-    parser = argparse.ArgumentParser(
-        description="Procesa datos WPM: carga, escala, segmenta y opcionalmente grafica los datos."
-    )
-    
-    parser.add_argument('csv_file', help='Ruta al archivo CSV con datos de MATRIX')
-    parser.add_argument('excel_activity_log', help='Ruta al archivo Excel con el registro de actividades')
-    parser.add_argument('body_segment', choices=['Thigh', 'Wrist', 'Hip'], help='Segmento corporal donde está colocado el IMU')
-    parser.add_argument('--plot', action='store_true', default=True, help='Mostrar gráficos de los datos segmentados')
-    parser.add_argument('--no-plot', action='store_false', dest='plot', help='No mostrar gráficos')
-    parser.add_argument('--output', '-o', type=str, default=None, help='Nombre del archivo de salida')
-    parser.add_argument('--sample-init', type=int, default=None, help='Índice de muestra para el inicio de "CAMINAR - USUAL SPEED"')
-    
-    args = parser.parse_args()
-    
-    try:
-        load_segment_wpm_data(
-            csv_file=args.csv_file,
-            excel_activity_log=args.excel_activity_log,
-            body_segment=args.body_segment,
-            plot_data=args.plot,
-            out_file=args.output,
-            sample_init_CAMINAR_USUAL_SPEED=args.sample_init
-        )
-    except Exception as e:
-        print(f"Error durante el procesamiento: {e}", file=sys.stderr)
-        sys.exit(1)
-
-
 if __name__ == "__main__":
     pass
 
