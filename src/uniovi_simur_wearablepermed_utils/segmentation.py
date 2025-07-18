@@ -417,7 +417,55 @@ def load_stacked_data_and_labels(file_path):
         print(f"Unexpected error: {e}")
         return None, None
 
+def concatenate_arrays_by_key(dicts, crop_columns):
+    """
+    Concatena los arrays de cada clave presente en todos los diccionarios en la segunda dimensión (axis=1).
+    Recorta los arrays al mínimo número de muestras (primer dimensión) si son de distinto tamaño.
+    Devuelve un nuevo diccionario con las claves y los arrays concatenados.
+    """
+    concatenated_dict = {}
+    # Encuentra las claves comunes en todos los diccionarios
+    common_keys = set.intersection(*(set(d.keys()) for d in dicts))
+    for key in common_keys:
+        arrays = [d[key][:, crop_columns] for d in dicts]
+        min_len = min(arr.shape[0] for arr in arrays)
+        arrays_cropped = [arr[:min_len] for arr in arrays]
+        concatenated_dict[key] = np.concatenate(arrays_cropped, axis=1)
+    return concatenated_dict
 
+def create_stack_from_windowed_dict(windowed_data_dict):
+    stacked_data = []
+    all_labels = []
+    for activity, data in windowed_data_dict.items():
+        # Selecciona las columnas deseadas (por ejemplo, 1:7)
+        selected_data = data
+        stacked_data.append(selected_data)
+        all_labels.extend([activity] * selected_data.shape[0])
+    # Apila verticalmente todas las ventanas
+    if stacked_data:
+        stacked_data = np.vstack(stacked_data)
+    else:
+        stacked_data = np.array([])
+    return stacked_data, all_labels
+
+# Ejemplo de uso:
+# stacked_data, all_labels = create_stack_from_windowed_dict(windowed_data_1020_thigh)
+
+def concatenate_stacks(stacks_and_labels):
+    """
+    Concatena múltiples stacks y sus etiquetas en un solo array y lista de etiquetas.
+    stacks_and_labels: lista de tuplas (stack_array, labels_list)
+    Devuelve: concatenated_stack, concatenated_labels
+    """
+    stacks = [s for s, _ in stacks_and_labels if s.size > 0]
+    labels = [l for _, l in stacks_and_labels]
+    if stacks:
+        concatenated_stack = np.vstack(stacks)
+        concatenated_labels = sum(labels, [])
+    else:
+        concatenated_stack = np.array([])
+        concatenated_labels = []
+    return concatenated_stack, concatenated_labels
 
 if __name__ == "__main__":
 	print("main empty")
