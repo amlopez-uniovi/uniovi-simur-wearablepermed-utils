@@ -467,6 +467,196 @@ def concatenate_stacks(stacks_and_labels):
         concatenated_labels = []
     return concatenated_stack, concatenated_labels
 
+
+#FUNCIONE SPAR ALINEA DE COMANDOS
+
+def load_concat_window_stack(npz_file_paths, crop_columns, window_size_samples, step_size_samples=None, save_file_name=None):
+    """
+    Loads multiple .npz files, concatenates arrays by key, applies windowing, creates a stacked array and labels,
+    and optionally saves the result to a file.
+
+    Parameters:
+    -----------
+    npz_file_paths : list of str
+        List of paths to .npz files to load.
+    crop_columns : list or slice
+        Columns to select from each array before concatenation.
+    window_size_samples : int
+        Size of the window in number of samples.
+    step_size_samples : int, optional
+        Step size for windowing (default is no overlap).
+
+    Returns:
+    --------
+    tuple
+        stacked_data (np.ndarray), labels (np.ndarray)
+    """
+    # Load dictionaries from each npz file
+    dicts = [load_dicts_from_npz(path) for path in npz_file_paths]
+    # Concatenate arrays by key and crop columns
+    concatenated_dict = concatenate_arrays_by_key(dicts, crop_columns)
+    # Apply windowing
+    windowed_dict = apply_windowing_WPM_segmented_data(concatenated_dict, window_size_samples, step_size_samples)
+    # Create stack and labels
+    stacked_data, labels_data = create_stack_from_windowed_dict(windowed_dict)
+    
+    if save_file_name is not None:
+        np.savez(save_file_name, concatenated_data=stacked_data, labels=labels_data)
+
+    return stacked_data, np.array(labels_data)
+
+
+
 if __name__ == "__main__":
-	print("main empty")
+    import argparse
+    import sys
+    
+    def parse_crop_columns(crop_str):
+        """Parse crop columns argument from string to slice or list."""
+        if crop_str is None:
+            return slice(None)
+        
+        try:
+            # Try to parse as slice notation (e.g., "1:7")
+            if ':' in crop_str:
+                parts = crop_str.split(':')
+                if len(parts) == 2:
+                    start = int(parts[0]) if parts[0] else None
+                    end = int(parts[1]) if parts[1] else None
+                    return slice(start, end)
+                elif len(parts) == 3:
+                    start = int(parts[0]) if parts[0] else None
+                    end = int(parts[1]) if parts[1] else None
+                    step = int(parts[2]) if parts[2] else None
+                    return slice(start, end, step)
+            else:
+                # Try to parse as comma-separated list (e.g., "1,2,3,4,5,6")
+                return [int(x.strip()) for x in crop_str.split(',')]
+        except ValueError:
+            raise argparse.ArgumentTypeError(f"Invalid crop columns format: {crop_str}")
+    
+    def main():
+        parser = argparse.ArgumentParser(
+            description="Load, concatenate, window, and stack WPM data from NPZ files",
+            formatter_class=argparse.RawDescriptionHelpFormatter,
+            epilog="""
+Examples:
+  # Basic usage with two files
+  python -m uniovi_simur_wearablepermed_utils.segmentation file1.npz file2.npz --crop-columns 1:7 --window-size 250
+
+  # With step size and output file
+  python -m uniovi_simur_wearablepermed_utils.segmentation file1.npz file2.npz --crop-columns 1:7 --window-size 250 --step-size 125 --output result.npz
+
+  # Using specific columns
+  python -m uniovi_simur_wearablepermed_utils.segmentation file1.npz file2.npz --crop-columns 1,2,3,4,5,6 --window-size 250
+            """
+        )
+        
+        parser.add_argument(
+            'npz_files', 
+            nargs='+',
+            help='Paths to NPZ files to process'
+        )
+        
+        parser.add_argument(
+            '--crop-columns', 
+            type=parse_crop_columns,
+            default=slice(1, 7),
+            help='Columns to select from arrays. Format: "start:end" or "col1,col2,col3". Default: "1:7"'
+        )
+        
+        parser.add_argument(
+            '--window-size', 
+            type=int,
+            required=True,
+            help='Window size in number of samples'
+        )
+        
+        parser.add_argument(
+            '--step-size', 
+            type=int,
+            default=None,
+            help='Step size for windowing (default: same as window size for no overlap)'
+        )
+        
+        parser.add_argument(
+            '--output', '-o',
+            type=str,
+            default=None,
+            help='Output file name to save results (.npz format)'
+        )
+        
+        parser.add_argument(
+            '--verbose', '-v',
+            action='store_true',
+            help='Enable verbose output'
+        )
+        
+        args = parser.parse_args()
+        
+        # Validate input files
+        for file_path in args.npz_files:
+            if not os.path.exists(file_path):
+                print(f"Error: File not found: {file_path}", file=sys.stderr)
+                sys.exit(1)
+            if not file_path.endswith('.npz'):
+                print(f"Warning: File {file_path} does not have .npz extension")
+        
+        # Validate window size
+        if args.window_size <= 0:
+            print("Error: Window size must be positive", file=sys.stderr)
+            sys.exit(1)
+        
+        # Validate step size
+        if args.step_size is not None and args.step_size <= 0:
+            print("Error: Step size must be positive", file=sys.stderr)
+            sys.exit(1)
+        
+        if args.verbose:
+            print(f"Processing {len(args.npz_files)} files:")
+            for i, file_path in enumerate(args.npz_files, 1):
+                print(f"  {i}. {file_path}")
+            print(f"Crop columns: {args.crop_columns}")
+            print(f"Window size: {args.window_size}")
+            print(f"Step size: {args.step_size if args.step_size else 'same as window size'}")
+            if args.output:
+                print(f"Output file: {args.output}")
+            print()
+        
+        try:
+            # Execute the main function
+            stacked_data, labels = load_concat_window_stack(
+                npz_file_paths=args.npz_files,
+                crop_columns=args.crop_columns,
+                window_size_samples=args.window_size,
+                step_size_samples=args.step_size,
+                save_file_name=args.output
+            )
+            
+            if args.verbose:
+                print(f"Processing completed successfully!")
+                print(f"Stacked data shape: {stacked_data.shape}")
+                print(f"Number of labels: {len(labels)}")
+                print(f"Unique activities: {np.unique(labels)}")
+                
+                # Show label distribution
+                unique_labels, counts = np.unique(labels, return_counts=True)
+                print("\nLabel distribution:")
+                for label, count in zip(unique_labels, counts):
+                    print(f"  {label}: {count} windows")
+            
+            if args.output:
+                print(f"Results saved to: {args.output}")
+            else:
+                print("Results not saved (use --output to save)")
+                
+        except Exception as e:
+            print(f"Error during processing: {e}", file=sys.stderr)
+            if args.verbose:
+                import traceback
+                traceback.print_exc()
+            sys.exit(1)
+
+if __name__ == "__main__":
+    main()
     

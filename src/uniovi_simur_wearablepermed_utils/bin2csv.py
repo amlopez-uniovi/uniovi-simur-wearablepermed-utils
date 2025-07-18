@@ -1149,6 +1149,11 @@ def ReadFileThread(bin_file, readFileQueue):  # 建立一个任务线程类
 
 
 def run():
+    """
+    Entry point for console script. 
+    Note: Consider using scripts/convert_bin_to_csv.py for better organization.
+    """
+    import argparse
     parser = argparse.ArgumentParser(description="Convert a .BIN file to .CSV using bin2csv.")
     parser.add_argument("bin_file", type=str, help="Path to the input .BIN file")
     parser.add_argument("csv_file", type=str, help="Path to the output .CSV file")
