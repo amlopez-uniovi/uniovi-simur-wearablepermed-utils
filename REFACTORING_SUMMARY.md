@@ -19,12 +19,13 @@
 La nueva nomenclatura refleja mejor el flujo de procesamiento:
 
 ```
-sensor_bin_to_csv → csv_to_segmented_activity → segmented_activity_to_stack
+sensor_bin_to_csv → csv_to_segmented_activity → segmented_activity_to_stack → stack_to_features
 ```
 
 1. **sensor_bin_to_csv**: Convierte datos de sensores desde formato binario (.BIN) a CSV
 2. **csv_to_segmented_activity**: Segmenta datos CSV por actividades usando Excel de registro
 3. **segmented_activity_to_stack**: Convierte datos segmentados a formato stack para ML
+4. **stack_to_features**: Extrae características (features) desde datos stack enventanados
 
 ### 3. Archivos modificados
 
@@ -40,9 +41,10 @@ sensor_bin_to_csv → csv_to_segmented_activity → segmented_activity_to_stack
 **setup.cfg:**
 ```ini
 console_scripts =
-     sensor_bin_to_csv = uniovi_simur_wearablepermed_utils.bin2csv:run
-     csv_to_segmented_activity = uniovi_simur_wearablepermed_utils.file_management:load_segment
+     sensor_bin_to_csv = uniovi_simur_wearablepermed_utils.bin2csv_cli:main
+     csv_to_segmented_activity = uniovi_simur_wearablepermed_utils.file_management_cli:main
      segmented_activity_to_stack = uniovi_simur_wearablepermed_utils.segmentation_cli:main
+     stack_to_features = uniovi_simur_wearablepermed_utils.feature_extraction_cli:main
 ```
 
 ### 5. Uso después de la instalación
@@ -55,11 +57,13 @@ pip install -e .
 sensor_bin_to_csv input.BIN output.csv
 csv_to_segmented_activity data.csv activities.xlsx Thigh
 segmented_activity_to_stack file1.npz file2.npz --window-size 250 --output result.npz
+stack_to_features result.npz --output features.npz
 
 # O usar scripts directamente
 python scripts/sensor_bin_to_csv.py input.BIN output.csv
 python scripts/csv_to_segmented_activity.py data.csv activities.xlsx Thigh
 python scripts/segmented_activity_to_stack.py file1.npz file2.npz --window-size 250
+python scripts/stack_to_features.py result.npz --output features.npz
 ```
 
 ### 6. Ventajas de la nueva nomenclatura

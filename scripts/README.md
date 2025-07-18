@@ -8,7 +8,91 @@ Los scripts están diseñados para funcionar como un pipeline de procesamiento d
 
 1. **`sensor_bin_to_csv.py`** - Conversión de datos de sensor desde formato BIN a CSV
 2. **`csv_to_segmented_activity.py`** - Segmentación de datos CSV por actividades
+3. **`segmented_activity_to_stack.py`** - Conversión d# Usar comandos globalmente
+process_wpm_data file1.npz file2.npz --window-size 250
+convert_bin_to_csv input.BIN output.csv
+load_segment_wpm_data data.csv activities.xlsx Thigh
+```
+
+---
+
+## 4. Stack to Features Script (`stack_to_features.py`)
+
+Este script extrae características (features) desde archivos NPZ que contienen datos stack enventanados.
+
+### Uso básico
+
+```bash
+python stack_to_features.py input_stack.npz --output features.npz
+```
+
+### Ejemplos
+
+#### 1. Extracción básica de features
+```bash
+python stack_to_features.py data_stack.npz --output features.npz
+```
+
+#### 2. Especificando número de IMUs
+```bash
+python stack_to_features.py data_stack.npz --n-imus 1 --output features.npz
+```
+
+#### 3. Con salida detallada
+```bash
+python stack_to_features.py data_stack.npz --n-imus 2 --output features.npz --verbose
+```
+
+#### 4. Procesando datos reales del proyecto
+```bash
+python stack_to_features.py ../examples/data/stacks/data_tot_PMP1020_1051.npz --output features_extracted.npz --verbose
+```
+
+### Argumentos
+
+- `stack_file`: Ruta al archivo NPZ que contiene datos stack enventanados
+- `--n-imus`: Número de IMUs en los datos stack (por defecto: 2)
+- `--output, -o`: Archivo NPZ de salida para guardar las características extraídas
+- `--verbose, -v`: Habilitar salida detallada
+
+### Ejemplo de salida
+
+Si ejecutas el comando con `--verbose`, verás una salida similar a:
+
+```
+=== Stack to Features Extraction ===
+Stack file: data_stack.npz
+Number of IMUs: 2
+Output file: features.npz
+
+✓ Feature extraction completed successfully!
+✓ Features shape: (1234, 156)
+✓ Number of windows: 1234
+✓ Data shape: (1234, 12, 250)
+✓ Unique labels: 15
+✓ Labels: ['CAMINAR USUAL SPEED', 'SENTADO VIENDO LA TV', ...]
+
+Label distribution:
+  CAMINAR USUAL SPEED: 89 windows
+  SENTADO VIENDO LA TV: 156 windows
+  ...
+
+✓ Results saved to: features.npz
+✓ Output file size: 2048576 bytes
+```
+
+### Formato de salida
+
+El archivo NPZ de salida contiene:
+- `features`: Características extraídas con forma (num_ventanas, num_features)
+- `labels`: Etiquetas correspondientes a cada ventana
+- `windowed_data`: Datos enventanados originales
+- `data_shape`: Forma de los datos originales
+- `num_windows`: Número total de ventanas
+- `unique_labels`: Etiquetas únicas en el datasetos segmentados a formato stack
+4. **`stack_to_features.py`** - Extracción de features desde datos stack
 3. **`segmented_activity_to_stack.py`** - Conversión de datos segmentados a formato stack
+4. **`stack_to_features.py`** - Extracción de features desde datos stack
 
 ## Scripts disponibles
 
@@ -63,6 +147,9 @@ python csv_to_segmented_activity.py sensor_data.csv activities.xlsx Thigh --outp
 
 # 3. Convertir datos segmentados a formato stack
 python segmented_activity_to_stack.py segmented_data.npz --window-size 250 --output final_data.npz
+
+# 4. Extraer features desde el stack
+python stack_to_features.py final_data.npz --output features.npz
 ```
 
 ---
@@ -78,6 +165,7 @@ pip install -e .
 sensor_bin_to_csv input.BIN output.csv
 csv_to_segmented_activity data.csv activities.xlsx Thigh
 segmented_activity_to_stack file1.npz file2.npz --window-size 250
+stack_to_features stack_data.npz --output features.npz
 ```ivos .BIN de sensores a formato .CSV.
 
 ### 2. `csv_to_segmented_activity.py` - Conversión CSV a datos segmentados por actividad  
@@ -85,6 +173,9 @@ Carga, escala, segmenta y opcionalmente grafica datos WPM desde archivos CSV y E
 
 ### 3. `segmented_activity_to_stack.py` - Conversión de datos segmentados a formato stack
 Procesa datos WPM segmentados: carga, concatena, enventana y apila desde archivos NPZ.
+
+### 4. `stack_to_features.py` - Extracción de features desde datos stack
+Extrae características (features) desde archivos NPZ que contienen datos stack enventanados.
 
 ---
 
