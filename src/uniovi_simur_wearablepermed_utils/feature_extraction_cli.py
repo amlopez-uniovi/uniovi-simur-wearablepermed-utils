@@ -21,10 +21,10 @@ Examples:
   stack_to_features data_stack.npz --output features.npz
 
   # Specify number of IMUs
-  stack_to_features data_stack.npz --n-imus 1 --output features.npz
+  stack_to_features data_stack.npz --n-imus 2 --output features.npz
 
-  # With verbose output
-  stack_to_features data_stack.npz --n-imus 2 --output features.npz --verbose
+  # With verbose output (single IMU, default)
+  stack_to_features data_stack.npz --output features.npz --verbose
 
   # Real example with project data
   stack_to_features examples/data/stacks/data_tot_PMP1020_1051.npz --output features_extracted.npz --verbose
@@ -40,8 +40,8 @@ Examples:
     parser.add_argument(
         '--n-imus',
         type=int,
-        default=2,
-        help='Number of IMUs in the stack data (default: 2)'
+        default=1,
+        help='Number of IMUs in the stack data (default: 1)'
     )
     
     parser.add_argument(

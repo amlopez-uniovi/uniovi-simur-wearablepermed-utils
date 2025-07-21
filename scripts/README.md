@@ -2,6 +2,25 @@
 
 Este directorio contiene scripts independientes para procesar datos WPM (Wearable Performance Monitoring) desde la línea de comandos.
 
+## 🚀 Utilidad Interactiva
+
+**`wpm_interactive_pipeline.py`** - Pipeline interactivo guiado que te lleva paso a paso a través de todo el procesamiento:
+
+```bash
+# Ejecutar pipeline interactivo completo
+python scripts/wpm_interactive_pipeline.py
+
+# O usar el comando global (después de pip install -e .)
+wpm_interactive_pipeline
+```
+
+Esta utilidad proporciona:
+- ✅ Guía paso a paso con prompts interactivos
+- ✅ Validación automática de archivos y tipos
+- ✅ Configuración asistida de parámetros
+- ✅ Manejo de errores con opciones de reintentar
+- ✅ Progreso visual y confirmaciones
+
 ## Pipeline de Procesamiento
 
 Los scripts están diseñados para funcionar como un pipeline de procesamiento de datos:

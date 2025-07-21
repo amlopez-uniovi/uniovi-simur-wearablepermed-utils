@@ -1,0 +1,21 @@
+{
+  "project": {
+    "base_folder": "/Users/antoniolopez/desarrollo_codigo/wearablepermed/uniovi-simur-wearablepermed-utils/tests/sandbox/pipe_test",
+    "subject_name": "PMP1020_W1_PI",
+    "description": "WPM pipeline configuration for subject PMP1020_W1_PI"
+  },
+  "stages": [
+    4
+  ],
+  "parameters": {
+    "stage2": {
+      "activity_log": "/Users/antoniolopez/desarrollo_codigo/wearablepermed/uniovi-simur-wearablepermed-utils/tests/sandbox/pipe_test/PMP1020_RegistroActividades.xlsx",
+      "body_position": "Thigh",
+      "sample_init": 13261119
+    },
+    "stage3": {
+      "window_size": 250,
+      "step_size": 125
+    }
+  }
+}
