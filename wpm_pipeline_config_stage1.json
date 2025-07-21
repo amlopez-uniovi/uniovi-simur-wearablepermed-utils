@@ -3,7 +3,7 @@
     "base_folder": "/Users/antoniolopez/desarrollo_codigo/wearablepermed/uniovi-simur-wearablepermed-utils/tests/sandbox/pipe_test",
     "project_name": "WPM_Multi_Subject_Analysis"
   },
-  "stages": [1, 2, 3, 4],
+  "stages": [1],
   "subjects": [
     {
       "name": "PMP1020_W1_PI",
@@ -23,9 +23,6 @@
     "stage3": {
       "window_size": 250,
       "step_size": 125
-    },
-    "stage4": {
-      "n_imus": "auto"
     }
   }
 }
